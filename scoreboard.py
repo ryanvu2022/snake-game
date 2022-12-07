@@ -6,19 +6,27 @@ FONT = ("Roboto", 18, "bold")
 class Scoreboard(Turtle):
     def __init__(self):
         super().__init__()
+        self.score = 0
+        with open("data.txt") as data:
+            self.high_score = int(data.read())
         self.hideturtle()
         self.color("#15f045")
         self.penup()
         self.goto(0, 270)
-        self.score = 0
-        self.write(f"Score: {self.score}", False, ALIGNMENT, FONT)
-        self.update_score()
+        self.update_scoreboard()
 
-    def update_score(self):
+    def update_scoreboard(self):
         self.clear()
-        self.write(f"Score: {self.score}", False, ALIGNMENT, FONT)
-        self.score += 1
+        self.write(f"Score: {self.score}  High Score: {self.high_score}", False, ALIGNMENT, FONT)
 
-    def game_over(self):
-        self.goto(0, 0)
-        self.write("GAME OVER", False, ALIGNMENT, FONT)
+    def reset(self):
+        if self.score > self.high_score:
+            self.high_score = self.score
+            with open("data.txt", mode="w") as data:
+                data.write(str(self.high_score))
+        self.score = 0
+        self.update_scoreboard()
+
+    def increase_score(self):
+        self.score += 1
+        self.update_scoreboard()
